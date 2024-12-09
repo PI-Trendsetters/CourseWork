@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор клининговых услуг</title>
+    <style>
+        li {
+            list-style-type: none; /* Убирает буллиты */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select, input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .close {
+            color: black;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Калькулятор клининговых услуг</h1>
+
+    <form method="POST">
+        <label for="area">Площадь помещения (м²):</label>
+        <input type="number" id="area" name="area" value="{{ area or '' }}" required>
+
+        <label for="rate">Тариф за м² (руб.):</label>
+        <input type="number" id="rate" name="rate" value="{{ rate or '' }}" required>
+
+        <label for="discount">Скидка (%):</label>
+        <select id="discount" name="discount" required>
+            <option value="0" {% if discount == 0 %}selected{% endif %}>Без скидки</option>
+            <option value="5" {% if discount == 5 %}selected{% endif %}>5%</option>
+            <option value="10" {% if discount == 10 %}selected{% endif %}>10%</option>
+            <option value="15" {% if discount == 15 %}selected{% endif %}>15%</option>
+            <option value="20" {% if discount == 20 %}selected{% endif %}>20%</option>
+        </select>
+
+        <label>Дополнительные услуги:</label>
+        <div>
+            <label><input type="checkbox" name="disinfection" {% if services and services.get('disinfection') %}checked{% endif %}> Дезинфекция (+500 руб.)</label><br>
+            <label><input type="checkbox" name="window_cleaning" {% if services and services.get('window_cleaning') %}checked{% endif %}> Мойка окон (+300 руб.)</label>
+        </div>
+
+        <button type="submit">Рассчитать стоимость</button>
+    </form>
+
+    {% if total_cost is not none %}
+        <div class="result">
+            <p>Стоимость: {{ total_cost }} руб.</p>
+        </div>
+    {% endif %}
+
+    <!-- Кнопка для отображения модального окна -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="button" onclick="openModal()" style="background-color: #007BFF;">О разработчиках</button>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>О разработчиках</h2>
+
+                <li><strong>Проект:</strong> Калькулятор клининговых услуг</li>
+                <li><strong>Год:</strong> 2024</li>
+                <li><strong>Разработчики:</strong></li>
+                <li>1. Шарафутдинов А.Б.</li>
+                <li>2. Щербина Л.А.</li>
+                <li>3. Фаткуллина Л.А.</li>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById("aboutModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("aboutModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        var modal = document.getElementById("aboutModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+</body>
+</html>
